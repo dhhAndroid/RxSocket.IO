@@ -6,14 +6,12 @@ import android.util.Log;
 import android.view.View;
 
 import java.net.URISyntaxException;
-import java.util.List;
 
 import io.socket.client.IO;
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
 import io.socket.rx.RxSocketManager;
 import io.socket.rx.SocketEvent;
-import io.socket.rx.SocketIOSibscrober;
 import rx.functions.Action1;
 
 public class MainActivity extends AppCompatActivity {
@@ -25,22 +23,40 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 //        socketIO(url);
-        RxSocketManager.getInstance().getDataOnce(url, "joinRoom")
+//        RxSocketManager.getInstance().getDataOnce(url, "fetchAllRoom", Socket.EVENT_CONNECT, Socket.EVENT_PING)
+//                .compose(RxLifecycle.with(this).<SocketEvent>bindToLifecycle())
+//                .subscribe(new Subscriber<SocketEvent>() {
+//                    @Override
+//                    public void onCompleted() {
+//                        Log.d("MainActivity", "onCompleted:");
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable e) {
+//
+//                    }
+//
+//                    @Override
+//                    public void onNext(SocketEvent socketEvent) {
+//                        Log.d("MainActivity", socketEvent.getEvent());
+//                    }
+//                });
+        RxSocketManager.getInstance().getDataOnce(url, "fetchAllRoom")
                 .subscribe(new Action1<Object>() {
                     @Override
                     public void call(Object o) {
-
+                        Log.d("MainActivity", "o:" + o);
                     }
                 });
-        RxSocketManager.getInstance().toObservable(url, "fetchAllRoom")
-                .subscribe(new SocketIOSibscrober<List<Prodect>>() {
-                    @Override
-                    public void onSuccess(List<Prodect> data) {
-                        for (Prodect prodect : data) {
-                            Log.d("MainActivity", "prodect:" + prodect);
-                        }
-                    }
-                });
+//        RxSocketManager.getInstance().toObservable(url, "fetchAllRoom")
+//                .subscribe(new SocketIOSibscrober<List<Prodect>>() {
+//                    @Override
+//                    public void onSuccess(List<Prodect> data) {
+//                        for (Prodect prodect : data) {
+//                            Log.d("MainActivity", "prodect:" + prodect);
+//                        }
+//                    }
+//                });
         RxSocketManager.getInstance().toObservable(url, "event1", "event2", "event3")
                 .subscribe(new Action1<SocketEvent>() {
                     @Override
@@ -58,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                 });
-        RxSocketManager.getInstance().emit(url, "join");
+//        RxSocketManager.getInstance().emit(url, "join");
     }
 
     public void onClick(View view) {

@@ -127,6 +127,7 @@ public class RxSocketManager {
                         return list.contains(socketEvent.getEvent());
                     }
                 })
+                .startWith(new SocketEvent(url, Socket.EVENT_CONNECT))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
@@ -140,59 +141,34 @@ public class RxSocketManager {
                     }
                 })
                 .first();
+    }
 
-//        return getSocketObservable(url)
-//                .map(new Func1<Socket, Emitter>() {
-//                    @Override
-//                    public Emitter call(Socket socket) {
-//                        return socket.emit(event);
-//                    }
-//                })
-//                .flatMap(new Func1<Emitter, Observable<SocketEvent>>() {
-//                    @Override
-//                    public Observable<SocketEvent> call(Emitter emitter) {
-//                        return socketBus.asObservable();
-//                    }
-//                })
-//                .first()
-//                .map(new Func1<SocketEvent, Object>() {
-//                    @Override
-//                    public Object call(SocketEvent socketEvent) {
-//                        return socketEvent.getData();
-//                    }
-//                })
-//                .observeOn(AndroidSchedulers.mainThread());
+    public Observable<Object> getDataOnce(final String url, final String event, final Object... args) {
+        return toObservable(url, event)
+                .doOnSubscribe(new Action0() {
+                    @Override
+                    public void call() {
+                        asyncEmit(url, event, args);
+                    }
+                })
+                .first();
     }
 
     public Observable<SocketEvent> getDataOnce(final String url, final String... events) {
-        final List<String> list = Arrays.asList(events);
-        return getSocketObservable(url)
-                .flatMapIterable(new Func1<Socket, Iterable<String>>() {
+        return toObservable(url, events)
+                .distinct(new Func1<SocketEvent, String>() {
                     @Override
-                    public Iterable<String> call(Socket socket) {
-                        return list;
-                    }
-                }, new Func2<Socket, String, Emitter>() {
-                    @Override
-                    public Emitter call(Socket socket, String s) {
-                        return socket.emit(s);
+                    public String call(SocketEvent socketEvent) {
+                        return socketEvent.getEvent();
                     }
                 })
-                .last()
-                .flatMap(new Func1<Emitter, Observable<SocketEvent>>() {
+                .take(events.length)
+                .doOnSubscribe(new Action0() {
                     @Override
-                    public Observable<SocketEvent> call(Emitter emitter) {
-                        return socketBus.asObservable();
+                    public void call() {
+                        asyncEmit(url, events);
                     }
-                })
-                .filter(new Func1<SocketEvent, Boolean>() {
-                    @Override
-                    public Boolean call(SocketEvent socketEvent) {
-                        return list.contains(socketEvent.getEvent());
-                    }
-                })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+                });
     }
 
     public void emit(String url, String event) {
@@ -240,6 +216,35 @@ public class RxSocketManager {
                         return socket.emit(event);
                     }
                 })
+                .subscribe();
+    }
+
+    public void asyncEmit(String url, final String event, final Object... args) {
+        getSocketObservable(url, null)
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(new Func1<Socket, Emitter>() {
+                    @Override
+                    public Emitter call(Socket socket) {
+                        return socket.emit(event, args);
+                    }
+                })
+                .subscribe();
+    }
+
+    public void asyncEmit(String url, final String... events) {
+        getSocketObservable(url)
+                .flatMapIterable(new Func1<Socket, Iterable<String>>() {
+                    @Override
+                    public Iterable<String> call(Socket socket) {
+                        return Arrays.asList(events);
+                    }
+                }, new Func2<Socket, String, Emitter>() {
+                    @Override
+                    public Emitter call(Socket socket, String s) {
+                        return socket.emit(s);
+                    }
+                })
+                .last()
                 .subscribe();
     }
 

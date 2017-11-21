@@ -29,4 +29,5 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile project(path: ':rxsocket.io')
     compile 'com.google.code.gson:gson:2.7'
+    compile 'com.dhh:rxlifecycle:1.6'
 }

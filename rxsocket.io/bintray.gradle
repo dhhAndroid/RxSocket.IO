@@ -1,10 +1,10 @@
 apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.jfrog.bintray'
 
-version = "1.4.0"      // 数据仓库依赖第三部分
+version = "1.1.0"      // 数据仓库依赖第三部分
 
-def siteUrl = 'https://github.com/dhhAndroid/RxWebSocket'
-def gitUrl = 'https://github.com/dhhAndroid/RxWebSocket.git'
+def siteUrl = 'https://github.com/dhhAndroid/RxSocket.IO'
+def gitUrl = 'https://github.com/dhhAndroid/RxSocket.IO.git'
 group = "com.dhh"       // 数据仓库依赖第一部分
 
 install {
@@ -12,7 +12,7 @@ install {
         pom {
             project {
                 packaging 'aar'
-                name 'An auto reconnection-webSocket build with okhttp and rxJava'     // 项目描述
+                name 'review socket.io by rxjava'     // 项目描述
                 url siteUrl
                 licenses {
                     license {
@@ -59,7 +59,7 @@ javadoc {
         author true
         version true
         links "http://docs.oracle.com/javase/7/docs/api"
-        title 'An auto reconnection-webSocket build with okhttp and rxJava'   // 文档标题
+        title 'review socket.io by rxjava'   // 文档标题
     }
 }
 
@@ -73,7 +73,7 @@ task releaseJar(type: Copy) {
     from('build/intermediates/bundles/default')
     into('../jar')
     include('classes.jar')
-    rename('classes.jar', 'websocket' + version + '.jar')
+    rename('classes.jar', 'rxsocket.io' + version + '.jar')
 }
 
 Properties properties = new Properties()
@@ -84,7 +84,7 @@ bintray {
     configurations = ['archives']
     pkg {
         repo = "maven"
-        name = "rxwebsocket"             // 仓库名称
+        name = "RxSocket.IO"             // 仓库名称
         websiteUrl = siteUrl
         vcsUrl = gitUrl
         licenses = ["Apache-2.0"]

@@ -1,5 +1,7 @@
 package com.dhh.rxsocketio;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Created by dhh on 2017/11/14.
  */
@@ -21,8 +23,8 @@ public class Prodect {
          * model_type : GS-SR-TD-CIRCLE
          * product_id : GS-SR-0001-0002-0000-0001
          */
-
         public String model_type;
+        @SerializedName("productId")
         public String product_id;
 
         public RobotInfoBean(String model_type, String product_id) {
