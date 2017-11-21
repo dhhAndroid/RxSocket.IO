@@ -143,7 +143,7 @@ public class RxSocketManager {
                 .first();
     }
 
-    public Observable<Object> getDataOnce(final String url, final String event, final Object... args) {
+    public Observable<Object> getDataOnceWithArgs(final String url, final String event, final Object... args) {
         return toObservable(url, event)
                 .doOnSubscribe(new Action0() {
                     @Override

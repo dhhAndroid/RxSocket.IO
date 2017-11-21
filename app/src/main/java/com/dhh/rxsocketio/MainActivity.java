@@ -15,7 +15,7 @@ import io.socket.rx.SocketEvent;
 import rx.functions.Action1;
 
 public class MainActivity extends AppCompatActivity {
-    final String url = "url";
+    final String url = "http://remote.gs-robot.com:3001/robot";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
