@@ -12,10 +12,11 @@ import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
 import io.socket.rx.RxSocketManager;
 import io.socket.rx.SocketEvent;
+import io.socket.rx.SocketProxy;
 import rx.functions.Action1;
 
 public class MainActivity extends AppCompatActivity {
-    final String url = "http://remote.gs-robot.com:3001/robot";
+    final String url = "sd";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 //        RxSocketManager.getInstance().toObservable(url, "fetchAllRoom")
-//                .subscribe(new SocketIOSibscrober<List<Prodect>>() {
+//                .subscribe(new SocketIoSubscriber<List<Prodect>>() {
 //                    @Override
 //                    public void onSuccess(List<Prodect> data) {
 //                        for (Prodect prodect : data) {
@@ -75,6 +76,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 //        RxSocketManager.getInstance().emit(url, "join");
+        SocketProxy socketProxy = SocketProxy.get("SDfsd");
     }
 
     public void onClick(View view) {

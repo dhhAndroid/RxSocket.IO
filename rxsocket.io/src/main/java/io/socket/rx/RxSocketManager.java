@@ -62,6 +62,14 @@ public class RxSocketManager {
         return getSocketObservable(url, null);
     }
 
+    public Socket getSocket(String url) {
+        Socket socket = socketCacheMap.get(url);
+        if (socket != null) {
+            return socket;
+        }
+        throw new IllegalStateException("The socket not open !");
+    }
+
     private Observable<Socket> getSocketObservable(String url, IO.Options opts) {
         Observable<Socket> observable = observableCacheMap.get(url);
         if (observable == null) {
@@ -143,12 +151,45 @@ public class RxSocketManager {
                 .first();
     }
 
+    public Observable<Object> getDataOnce(final String url, final String emitEvent, final String onEvent) {
+        return toObservable(url, onEvent)
+                .doOnSubscribe(new Action0() {
+                    @Override
+                    public void call() {
+                        asyncEmit(url, emitEvent);
+                    }
+                })
+                .first();
+    }
+
     public Observable<Object> getDataOnceWithArgs(final String url, final String event, final Object... args) {
         return toObservable(url, event)
                 .doOnSubscribe(new Action0() {
                     @Override
                     public void call() {
                         asyncEmit(url, event, args);
+                    }
+                })
+                .first();
+    }
+
+    public Observable<Object> getDataOnceWithArgs(final String url, final String emitEvent, final String onEvent, final Object args) {
+        return toObservable(url, onEvent)
+                .doOnSubscribe(new Action0() {
+                    @Override
+                    public void call() {
+                        asyncEmit(url, emitEvent, args);
+                    }
+                })
+                .first();
+    }
+
+    public Observable<Object> getDataOnceWithArgs(final String url, final String emitEvent, final String onEvent, final List<Object> args) {
+        return toObservable(url, onEvent)
+                .doOnSubscribe(new Action0() {
+                    @Override
+                    public void call() {
+                        asyncEmit(url, emitEvent, args.toArray());
                     }
                 })
                 .first();

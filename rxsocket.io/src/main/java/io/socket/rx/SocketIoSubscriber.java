@@ -15,11 +15,11 @@ import rx.Subscriber;
  * Created by dhh on 2017/11/14.
  */
 
-public abstract class SocketIOSibscrober<T> extends Subscriber<Object> {
+public abstract class SocketIoSubscriber<T> extends Subscriber<Object> {
     private static final Gson GSON = new Gson();
     private Type type;
 
-    public SocketIOSibscrober() {
+    public SocketIoSubscriber() {
         analysisType();
     }
 
@@ -43,7 +43,7 @@ public abstract class SocketIOSibscrober<T> extends Subscriber<Object> {
                 T data = GSON.fromJson(GSON.fromJson(json, String.class), type);
                 onSuccess(data);
             } catch (JsonSyntaxException e1) {
-                Log.e("SocketIOSibscrober", "type:" + type);
+                Log.e("SocketIoSubscriber", "type:" + type);
                 throw new JsonParseException(e1);
             }
         }
